@@ -9,7 +9,6 @@ const Product = ({ id, name, qty, rate, onUpdate, onRemove }) => {
 
   useEffect(() => {
     const newTotal = qty * rate;
-    const newGst = newTotal * 0.18;
     setTotal(newTotal);
     
   }, [qty, rate]);
