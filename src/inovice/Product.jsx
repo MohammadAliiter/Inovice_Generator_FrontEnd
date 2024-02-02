@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 const Product = ({ id, name, qty, rate, onUpdate, onRemove }) => {
   const [total, setTotal] = useState(qty * rate);
-  const [gst, setGst] = useState(total * 0.18);
 
   const handleUpdate = (field, value) => {
     onUpdate(id, { [field]: value });
@@ -12,7 +11,7 @@ const Product = ({ id, name, qty, rate, onUpdate, onRemove }) => {
     const newTotal = qty * rate;
     const newGst = newTotal * 0.18;
     setTotal(newTotal);
-    setGst(newGst);
+    
   }, [qty, rate]);
 
   return (
