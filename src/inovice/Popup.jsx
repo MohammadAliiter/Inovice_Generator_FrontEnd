@@ -1,4 +1,3 @@
-// Popup.jsx
 
 import React, { useRef } from 'react';
 import html2canvas from 'html2canvas';
@@ -6,6 +5,7 @@ import jsPDF from 'jspdf';
 import axios from 'axios';
 
 const Popup = ({ products, grandTotal, grandGst }) => {
+  const GTotal = grandTotal + grandGst;
   const pdfRef = useRef();
   const downloadPDF = () => {
     const input = pdfRef.current;
@@ -31,18 +31,19 @@ const Popup = ({ products, grandTotal, grandGst }) => {
           rate: product.rate,
           total: product.qty * product.rate,
         })),
-        grandTotal: grandTotal,
+        grandTotal: GTotal,
         grandGst: grandGst,
       };
-      console.log('Sending data:', { detailedData });
+    
       axios
         .post('https://inovice-generator-backend.onrender.com/api/invoice', detailedData)
         .then((response) => {
           console.log('Data sent successfully:', response.data);
         })
         .catch((error) => {
-          console.error('Error sending data:', error);
+          console.error('Error sending data:', error.response ? error.response.data : error.message);
         });
+        
 
       pdf.save('invoice.pdf');
     });
@@ -51,7 +52,7 @@ const Popup = ({ products, grandTotal, grandGst }) => {
   return (
     
         <>
-          <div className=" relative overflow-x-auto shadow-md sm:rounded-lg" ref={pdfRef}>
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg" ref={pdfRef}>
         <div className="popup-content">
           <h2 className="text-2xl font-bold mb-4 mt-2 sm:ml-4">Product Details</h2>
 
@@ -87,33 +88,37 @@ const Popup = ({ products, grandTotal, grandGst }) => {
           </table>
 
       <hr className="my-4 ml-4 sm:ml-4 w-full border-b border-gray-300 dark:border-gray-700" />
-      <div className="container mx-auto ml-40">
-        <div className="ml-4 sm:ml-4">
+      <div className="container mx-auto sm:ml-4">
+            <div className="sm:relative text-center mt-20">
           <div className="relative text-center mt-20">
-            <p className="">
-              <span className="">Total:</span>
-              <span className="ml-4">{grandTotal}</span>
+            <p className="mb-8">
+              <span className="text-xl">Total:</span>
+              <span className="ml-8 text-xl">{grandTotal}</span>
             </p>
-            <p className="">
-              <span className="">GST:</span>
-              <span className="ml-4">18%</span>
+            <p className="mb-5">
+              <span className=" text-xl">GST:</span>
+              <span className="ml-8 text-xl">18%</span>
             </p>
             <hr className="w-80 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-4 dark:bg-gray-700" />
             <p className="text-2xl font-bold mt-4 ">
               <span className="">Grand Total:</span>
-              <span className="ml-4">{grandTotal + grandGst}</span>
+              <span className="ml-4">{GTotal}</span>
             </p>
             <hr className="w-80 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-4 dark:bg-gray-700" />
           </div>
         </div>
       </div>
-      <div className="text-center mt-5 sm:mt-0"> {/* Adjusted class to sm:mt-0 */}
-        <button className="bg-green-500 text-white p-2 mb-4 rounded-md" onClick={downloadPDF}>
-          Download PDF
-        </button>
+     
       </div>
       </div>
-      </div>
+      <div className="text-center mt-5 sm:mt-0">
+                <button
+                  className="bg-green-500 text-white p-2 mb-4 rounded-md sm:inline-block sm:mx-2"
+                  onClick={downloadPDF}
+                >
+                  Download PDF
+                </button>
+              </div>
     </>
   );
 };
