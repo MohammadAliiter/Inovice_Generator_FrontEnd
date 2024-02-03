@@ -44,7 +44,7 @@ const Popup = ({ products, grandTotal, grandGst }) => {
           console.error('Error sending data:', error);
         });
 
-     // pdf.save('invoice.pdf');
+      pdf.save('invoice.pdf');
     });
   };
 
